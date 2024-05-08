@@ -34,7 +34,7 @@ export default function Tab2() {
 					: isPending
 					? 'pending'
 					: 'data'
-					? data
+					? 'hit'
 					: 'error' + error}
 			</Text>
 			<Button onPress={() => mutation.mutate()}>

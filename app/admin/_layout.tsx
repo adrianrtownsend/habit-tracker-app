@@ -5,16 +5,16 @@ export {
 
 export const unstable_settings = {
 	// Ensure that reloading on `/modal` keeps a back button present.
-	initialRouteName: '(tabs)',
+	initialRouteName: '(admin)',
 };
 
 import { Stack } from 'expo-router';
 
-export default function AppLayout() {
+export default function AdminLayout() {
 	return (
 		<Stack>
 			<Stack.Screen
-				name='(tabs)'
+				name='(admin)'
 				options={{ headerShown: false }}
 			/>
 		</Stack>
