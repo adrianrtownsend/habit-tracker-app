@@ -39,6 +39,7 @@ import { Pressable } from '@/components/ui/pressable';
 import useRouter from '@unitools/router';
 import { AuthLayout } from '../layout';
 import { router } from 'expo-router';
+import auth from '@/lib/feathers/auth';
 
 const signUpSchema = z.object({
 	email: z.string().min(1, 'Email is required').email(),
@@ -77,23 +78,9 @@ const SignUpWithLeftBackground = () => {
 	});
 	const toast = useToast();
 
-	const onSubmit = (data: SignUpSchemaType) => {
+	const onSubmit = async (data: SignUpSchemaType) => {
 		if (data.password === data.confirmpassword) {
-			toast.show({
-				placement: 'bottom right',
-				render: ({ id }) => {
-					return (
-						<Toast
-							nativeID={id}
-							variant='accent'
-							action='success'
-						>
-							<ToastTitle>Success</ToastTitle>
-						</Toast>
-					);
-				},
-			});
-			reset();
+			await auth.signup(data);
 		} else {
 			toast.show({
 				placement: 'bottom right',
@@ -101,7 +88,7 @@ const SignUpWithLeftBackground = () => {
 					return (
 						<Toast
 							nativeID={id}
-							variant='accent'
+							variant='outline'
 							action='error'
 						>
 							<ToastTitle>Passwords do not match</ToastTitle>
@@ -111,6 +98,11 @@ const SignUpWithLeftBackground = () => {
 			});
 		}
 	};
+
+	const onSubmitGoogle = async () => {
+		await auth.googleOAuth();
+	};
+
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -350,7 +342,7 @@ const SignUpWithLeftBackground = () => {
 						variant='outline'
 						action='secondary'
 						className='w-full gap-1'
-						onPress={() => {}}
+						onPress={handleSubmit(onSubmitGoogle)}
 					>
 						<ButtonText className='font-medium'>
 							Continue with Google

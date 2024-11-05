@@ -9,7 +9,7 @@ import type { LucideIcon } from 'lucide-react-native';
 import { InboxIcon } from './assets/icons/inbox';
 import { GlobeIcon } from './assets/icons/globe';
 import { Button, ButtonText } from '@/components/ui/button';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Heading } from '@/components/ui/heading';
 import { ScrollView } from '@/components/ui/scroll-view';
 import { Divider } from '@/components/ui/divider';
@@ -27,7 +27,10 @@ import { CalendarIcon } from './assets/icons/calendar';
 import { SafeAreaView } from '@/components/ui/safe-area-view';
 import { cn } from '@gluestack-ui/nativewind-utils/cn';
 import { Platform } from 'react-native';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
+import React from 'react';
+import { FeathersClientContext } from '@/lib/feathers/contexts/FeathersClientContext';
+import { getTasks, tasks } from '@/lib/feathers/api';
 type MobileHeaderProps = {
 	title: string;
 };
@@ -366,7 +369,12 @@ const MainContent = () => {
 						Welcome Alexander
 					</Heading>
 
-					<Grid className='gap-5'>
+					<Grid
+						className='gap-5'
+						_extra={{
+							className: '',
+						}}
+					>
 						{HeadingCards.map((item, index) => {
 							return (
 								<GridItem
@@ -413,7 +421,12 @@ const MainContent = () => {
 							you’re good to go.
 						</Text>
 					</Box>
-					<Grid className='gap-5'>
+					<Grid
+						className='gap-5'
+						_extra={{
+							className: '',
+						}}
+					>
 						<GridItem
 							_extra={{
 								className: 'col-span-12 sm:col-span-6 lg:col-span-4',
@@ -620,6 +633,9 @@ const MainContent = () => {
 };
 
 export const Dashboard = () => {
+	useFocusEffect(() => {
+		getTasks({}).then((t) => console.log('t: ', t));
+	});
 	return (
 		<SafeAreaView className='h-full w-full'>
 			<DashboardLayout

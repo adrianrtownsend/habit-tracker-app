@@ -7,13 +7,14 @@ import {
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import 'react-native-reanimated';
 
 // import { useColorScheme } from '@/hooks/useColorScheme';
 import { useColorScheme } from '@/components/useColorScheme';
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import '../global.css';
+import { FeathersClientProvider } from '@/lib/feathers/contexts/FeathersClientContext';
 
 export {
 	// Catch any errors thrown by the Layout component.
@@ -46,20 +47,24 @@ export default function RootLayout() {
 	}
 
 	return (
-		<GluestackUIProvider mode={(colorScheme ?? 'light') as 'light' | 'dark'}>
-			<ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-				<Stack>
-					<Stack.Screen
-						name='(tabs)'
-						options={{ headerShown: false }}
-					/>
-					<Stack.Screen
-						name='auth'
-						options={{ headerShown: false }}
-					/>
-					<Stack.Screen name='+not-found' />
-				</Stack>
-			</ThemeProvider>
-		</GluestackUIProvider>
+		<FeathersClientProvider>
+			<GluestackUIProvider mode={(colorScheme ?? 'light') as 'light' | 'dark'}>
+				<ThemeProvider
+					value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
+				>
+					<Stack>
+						<Stack.Screen
+							name='(tabs)'
+							options={{ headerShown: false }}
+						/>
+						<Stack.Screen
+							name='auth'
+							options={{ headerShown: false }}
+						/>
+						<Stack.Screen name='+not-found' />
+					</Stack>
+				</ThemeProvider>
+			</GluestackUIProvider>
+		</FeathersClientProvider>
 	);
 }
