@@ -5,7 +5,6 @@ import { ChevronLeftIcon, Icon, MenuIcon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { VStack } from '@/components/ui/vstack';
 import { Pressable } from '@/components/ui/pressable';
-import type { LucideIcon } from 'lucide-react-native';
 import { InboxIcon } from './assets/icons/inbox';
 import { GlobeIcon } from './assets/icons/globe';
 import { Button, ButtonText } from '@/components/ui/button';
@@ -19,7 +18,6 @@ import {
 	AvatarFallbackText,
 	AvatarImage,
 } from '@/components/ui/avatar';
-import useRouter from '@unitools/router';
 import { HomeIcon } from './assets/icons/home';
 import { HeartIcon } from './assets/icons/heart';
 import { ProfileIcon } from './assets/icons/profile';
@@ -27,49 +25,45 @@ import { CalendarIcon } from './assets/icons/calendar';
 import { SafeAreaView } from '@/components/ui/safe-area-view';
 import { cn } from '@gluestack-ui/nativewind-utils/cn';
 import { Platform } from 'react-native';
-import { router, useFocusEffect } from 'expo-router';
+import { router } from 'expo-router';
 import React from 'react';
-import { FeathersClientContext } from '@/lib/feathers/contexts/FeathersClientContext';
-import { getTasks, tasks } from '@/lib/feathers/api';
-type MobileHeaderProps = {
-	title: string;
-};
+import { TaskForm } from '@/forms/task';
+import {
+	BottomTabIcon,
+	HeaderProps,
+	IconLink,
+	MobileHeaderProps,
+} from '@/types';
+import { MobileHeader, WebHeader } from '@/lib/theme/custom/header';
+import { MobileFooter } from '@/lib/theme/custom/footer';
 
-type HeaderProps = {
-	title: string;
-	toggleSidebar: () => void;
-};
-
-type Icons = {
-	iconName: LucideIcon | typeof Icon;
-};
-const list: Icons[] = [
+const list: IconLink[] = [
 	{
 		iconName: HomeIcon,
+		route: '/',
 	},
 	{
 		iconName: InboxIcon,
 	},
 	{
 		iconName: GlobeIcon,
+		route: '/news-feed',
 	},
 	{
 		iconName: HeartIcon,
 	},
 ];
-type BottomTabs = {
-	iconName: LucideIcon | typeof Icon;
-	iconText: string;
-};
-const bottomTabsList: BottomTabs[] = [
+const bottomTabsList: BottomTabIcon[] = [
 	{
 		iconName: HomeIcon,
 		iconText: 'Home',
+		route: '/',
 	},
 
 	{
 		iconName: GlobeIcon,
 		iconText: 'Community',
+		route: '/news-feed',
 	},
 	{
 		iconName: InboxIcon,
@@ -82,6 +76,7 @@ const bottomTabsList: BottomTabs[] = [
 	{
 		iconName: ProfileIcon,
 		iconText: 'Profile',
+		route: '/profile',
 	},
 ];
 
@@ -207,9 +202,9 @@ const ColleaguesCards: ColleaguesCardData[] = [
 
 const Sidebar = () => {
 	const [selectedIndex, setSelectedIndex] = useState<number>(0);
-	const handlePress = (index: number) => {
+	const handlePress = (index: number, route?: string) => {
 		setSelectedIndex(index);
-		// router.push("/dashboard/dashboard-layout");
+		router.push(route);
 	};
 
 	return (
@@ -222,7 +217,7 @@ const Sidebar = () => {
 					<Pressable
 						key={index}
 						className='hover:bg-background-50'
-						onPress={() => handlePress(index)}
+						onPress={() => handlePress(index, item.route)}
 					>
 						<Icon
 							as={item.iconName}
@@ -247,9 +242,9 @@ const DashboardLayout = (props: any) => {
 	}
 	return (
 		<VStack className='h-full w-full bg-background-0'>
-			<Box className='md:hidden'>
+			{/* <Box className='md:hidden'>
 				<MobileHeader title={props.title} />
-			</Box>
+			</Box> */}
 			<Box className='hidden md:flex'>
 				<WebHeader
 					toggleSidebar={toggleSidebar}
@@ -267,85 +262,6 @@ const DashboardLayout = (props: any) => {
 		</VStack>
 	);
 };
-
-function MobileFooter({ footerIcons }: { footerIcons: any }) {
-	return (
-		<HStack
-			className={cn(
-				'bg-background-0 justify-between w-full absolute left-0 bottom-0 right-0 p-3 overflow-hidden items-center  border-t-border-300  md:hidden border-t',
-				{ 'pb-5': Platform.OS === 'ios' },
-				{ 'pb-5': Platform.OS === 'android' }
-			)}
-		>
-			{footerIcons.map(
-				(
-					item: { iconText: string; iconName: any },
-					index: React.Key | null | undefined
-				) => {
-					return (
-						<Pressable
-							className='px-0.5 flex-1 flex-col items-center'
-							key={index}
-							onPress={() => router.push('/dashboard/dashboard-layout')}
-						>
-							<Icon
-								as={item.iconName}
-								size='md'
-								className='h-[32px] w-[65px]'
-							/>
-							<Text className='text-xs text-center text-typography-600'>
-								{item.iconText}
-							</Text>
-						</Pressable>
-					);
-				}
-			)}
-		</HStack>
-	);
-}
-
-function WebHeader(props: HeaderProps) {
-	return (
-		<HStack className='pt-4  pr-10 pb-3 bg-background-0 items-center justify-between border-b border-border-300'>
-			<HStack className='items-center'>
-				<Pressable
-					onPress={() => {
-						props.toggleSidebar();
-					}}
-				>
-					<Icon
-						as={MenuIcon}
-						size='lg'
-						className='mx-5'
-					/>
-				</Pressable>
-				<Text className='text-2xl'>{props.title}</Text>
-			</HStack>
-
-			<Avatar className='h-9 w-9'>
-				<AvatarFallbackText className='font-light'>A</AvatarFallbackText>
-			</Avatar>
-		</HStack>
-	);
-}
-
-function MobileHeader(props: MobileHeaderProps) {
-	return (
-		<HStack
-			className='py-6 px-4 border-b border-border-50 bg-background-0 items-center'
-			space='md'
-		>
-			<Pressable
-				onPress={() => {
-					router.back();
-				}}
-			>
-				<Icon as={ChevronLeftIcon} />
-			</Pressable>
-			<Text className='text-xl'>{props.title}</Text>
-		</HStack>
-	);
-}
 
 const MainContent = () => {
 	return (
@@ -626,6 +542,7 @@ const MainContent = () => {
 							</VStack>
 						</GridItem>
 					</Grid>
+					<TaskForm />
 				</VStack>
 			</ScrollView>
 		</Box>
@@ -633,9 +550,6 @@ const MainContent = () => {
 };
 
 export const Dashboard = () => {
-	useFocusEffect(() => {
-		getTasks({}).then((t) => console.log('t: ', t));
-	});
 	return (
 		<SafeAreaView className='h-full w-full'>
 			<DashboardLayout

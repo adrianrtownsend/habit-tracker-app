@@ -7,14 +7,17 @@ import {
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import 'react-native-reanimated';
 
 // import { useColorScheme } from '@/hooks/useColorScheme';
 import { useColorScheme } from '@/components/useColorScheme';
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import '../global.css';
-import { FeathersClientProvider } from '@/lib/feathers/contexts/FeathersClientContext';
+import {
+	FeathersClientContext,
+	FeathersClientProvider,
+} from '@/lib/feathers/contexts/FeathersClientContext';
 
 export {
 	// Catch any errors thrown by the Layout component.
@@ -23,7 +26,7 @@ export {
 
 export const unstable_settings = {
 	// Ensure that reloading on `/modal` keeps a back button present.
-	initialRouteName: '(tabs)',
+	initialRouteName: '(auth)',
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -36,8 +39,10 @@ export default function RootLayout() {
 		...FontAwesome.font,
 	});
 
+	const { loading } = useContext(FeathersClientContext);
+
 	useEffect(() => {
-		if (loaded) {
+		if (loaded && !loading) {
 			SplashScreen.hideAsync();
 		}
 	}, [loaded]);
@@ -49,21 +54,21 @@ export default function RootLayout() {
 	return (
 		<FeathersClientProvider>
 			<GluestackUIProvider mode={(colorScheme ?? 'light') as 'light' | 'dark'}>
-				<ThemeProvider
+				{/* <ThemeProvider
 					value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
-				>
-					<Stack>
-						<Stack.Screen
-							name='(tabs)'
-							options={{ headerShown: false }}
-						/>
-						<Stack.Screen
-							name='auth'
-							options={{ headerShown: false }}
-						/>
-						<Stack.Screen name='+not-found' />
-					</Stack>
-				</ThemeProvider>
+				> */}
+				<Stack>
+					<Stack.Screen
+						name='(app)'
+						options={{ headerShown: false }}
+					/>
+					<Stack.Screen
+						name='auth'
+						options={{ headerShown: false }}
+					/>
+					<Stack.Screen name='+not-found' />
+				</Stack>
+				{/* </ThemeProvider> */}
 			</GluestackUIProvider>
 		</FeathersClientProvider>
 	);

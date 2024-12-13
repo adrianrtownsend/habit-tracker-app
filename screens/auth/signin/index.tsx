@@ -31,17 +31,16 @@ import {
 import { Button, ButtonText, ButtonIcon } from '@/components/ui/button';
 import { Keyboard } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AlertTriangle } from 'lucide-react-native';
 import { GoogleIcon } from './assets/icons/google';
 import { Pressable } from '@/components/ui/pressable';
-import useRouter from '@unitools/router';
 import { AuthLayout } from '../layout';
 import { router } from 'expo-router';
 import auth from '@/lib/feathers/auth';
 import { FeathersClientContext } from '@/lib/feathers/contexts/FeathersClientContext';
 import feathersClient from '@/lib/feathers';
+import { loginSchema, LoginSchemaType } from '@/utils/schemas';
 
 const USERS = [
 	{
@@ -57,14 +56,6 @@ const USERS = [
 		password: 'Thomas@1234',
 	},
 ];
-
-const loginSchema = z.object({
-	email: z.string().min(1, 'Email is required').email(),
-	password: z.string().min(1, 'Password is required'),
-	rememberme: z.boolean().optional(),
-});
-
-type LoginSchemaType = z.infer<typeof loginSchema>;
 
 const LoginWithLeftBackground = () => {
 	const {

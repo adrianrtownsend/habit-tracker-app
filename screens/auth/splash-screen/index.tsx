@@ -1,3 +1,4 @@
+import React from 'react';
 import { VStack } from '@/components/ui/vstack';
 import { Button, ButtonText } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
@@ -6,8 +7,6 @@ import {
 	GluestackIconDark,
 } from './assets/icons/gluestack-icon';
 import { useColorScheme } from 'nativewind';
-
-import useRouter from '@unitools/router';
 import { AuthLayout } from '../layout';
 import { router } from 'expo-router';
 

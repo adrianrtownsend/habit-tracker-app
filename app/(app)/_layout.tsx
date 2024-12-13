@@ -1,16 +1,41 @@
-import React, { useContext } from 'react';
-import { View, Text } from 'react-native';
-import auth from '@/lib/feathers/auth';
-import { Redirect, Stack } from 'expo-router';
-import feathersclient from '@/lib/feathers';
+import { Redirect, router, Stack } from 'expo-router';
+import React, { useContext, useEffect, useState } from 'react';
+
+import { TabBarIcon } from '@/components/navigation/TabBarIcon';
+import { Colors } from '@/constants/Colors';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import feathersClient from '@/lib/feathers';
+import { Text } from '@/components/ui/text';
+import { View } from '@/components/ui/view';
 import { FeathersClientContext } from '@/lib/feathers/contexts/FeathersClientContext';
 
-export default function AppLayout({ children }: { children: React.ReactNode }) {
+const StackLayout = () => {
 	const { user } = useContext(FeathersClientContext);
 
-	if (!user) {
-		return <Redirect href='/auth/signin' />;
-	}
+	// if (!user) {
+	// 	return <Redirect href='/auth/signin' />;
+	// }
 
-	return <Stack />;
-}
+	return (
+		<Stack
+			screenOptions={{
+				headerShown: false,
+			}}
+		>
+			<Stack.Screen
+				name='index'
+				options={{ headerShown: false }}
+			/>
+			<Stack.Screen
+				name='news-feed'
+				options={{ headerShown: false }}
+			/>
+			<Stack.Screen
+				name='profile'
+				options={{ headerShown: false }}
+			/>
+		</Stack>
+	);
+};
+
+export default StackLayout;

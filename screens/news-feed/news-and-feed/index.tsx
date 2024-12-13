@@ -1,3 +1,4 @@
+import React from 'react';
 import { Box } from '@/components/ui/box';
 import { HStack } from '@/components/ui/hstack';
 import {
@@ -33,6 +34,7 @@ import { SafeAreaView } from '@/components/ui/safe-area-view';
 import { cn } from '@gluestack-ui/nativewind-utils/cn';
 import { Platform } from 'react-native';
 import { router } from 'expo-router';
+import { WebHeader } from '@/lib/theme/custom/header';
 type MobileHeaderProps = {
 	title: string;
 };
@@ -207,9 +209,9 @@ const DashboardLayout = (props: any) => {
 
 	return (
 		<VStack className='h-full w-full bg-background-0'>
-			<Box className='md:hidden'>
+			{/* <Box className='md:hidden'>
 				<MobileHeader title={'News feed'} />
-			</Box>
+			</Box> */}
 			<Box className='hidden md:flex'>
 				<WebHeader
 					toggleSidebar={toggleSidebar}
@@ -260,49 +262,6 @@ function MobileFooter({ footerIcons }: { footerIcons: any }) {
 					);
 				}
 			)}
-		</HStack>
-	);
-}
-
-function WebHeader(props: HeaderProps) {
-	return (
-		<HStack className='pt-4 pr-10 pb-3 bg-background-0 items-center justify-between border-b border-border-300'>
-			<HStack className='items-center'>
-				<Pressable
-					onPress={() => {
-						props.toggleSidebar();
-					}}
-				>
-					<Icon
-						as={MenuIcon}
-						size='lg'
-						className='mx-5'
-					/>
-				</Pressable>
-				<Text className='text-2xl'>{props.title}</Text>
-			</HStack>
-
-			<Avatar className='h-9 w-9'>
-				<AvatarFallbackText className='font-light'>A</AvatarFallbackText>
-			</Avatar>
-		</HStack>
-	);
-}
-
-function MobileHeader(props: MobileHeaderProps) {
-	return (
-		<HStack
-			className='py-6 px-4 border-b border-border-300 bg-background-0 items-center'
-			space='md'
-		>
-			<Pressable
-				onPress={() => {
-					router.back();
-				}}
-			>
-				<Icon as={ChevronLeftIcon} />
-			</Pressable>
-			<Text className='text-xl'>{props.title}</Text>
 		</HStack>
 	);
 }

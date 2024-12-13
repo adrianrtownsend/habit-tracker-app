@@ -30,9 +30,17 @@ type FeathersClientAction =
 			user: User;
 			type: 'SET_USER';
 	  }
-	| { type: 'LOGOUT' };
+	| { type: 'LOGOUT' }
+	| { type: 'SET_LOADING' };
 
-export const FeathersClientContext = createContext();
+export const FeathersClientContext = createContext({
+	user: null,
+	loading: true,
+	signup: async (data: AuthData) => {},
+	login: async (data: AuthData) => {},
+	logout: async () => {},
+	googleOAuth: async () => {},
+});
 
 export const FeathersClientProvider = ({
 	children,
@@ -64,6 +72,11 @@ export const FeathersClientProvider = ({
 					user: null,
 					loading: false,
 				};
+			case 'SET_LOADING':
+				return {
+					...state,
+					loading: false,
+				};
 			default:
 				return state;
 		}
@@ -82,6 +95,9 @@ export const FeathersClientProvider = ({
 	};
 
 	useEffect(() => {
+		if (!feathersClient.authentication.authenticated)
+			return dispatch({ type: 'SET_LOADING' });
+
 		getUser();
 	}, []);
 
