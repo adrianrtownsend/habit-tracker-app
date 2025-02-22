@@ -22,12 +22,11 @@ import useRouter from '@unitools/router';
 import { Pressable } from '@/components/ui/pressable';
 import { AuthLayout } from '../layout';
 import { router } from 'expo-router';
-
-const forgotPasswordSchema = z.object({
-	email: z.string().min(1, 'Email is required').email(),
-});
-
-type forgotPasswordSchemaType = z.infer<typeof forgotPasswordSchema>;
+import React from 'react';
+import {
+	forgotPasswordSchema,
+	forgotPasswordSchemaType,
+} from '@/utils/schemas';
 
 const ForgotPasswordScreen = () => {
 	const {
@@ -47,7 +46,7 @@ const ForgotPasswordScreen = () => {
 				return (
 					<Toast
 						nativeID={id}
-						variant='accent'
+						variant='outline'
 						action='success'
 					>
 						<ToastTitle>Link Sent Successfully</ToastTitle>

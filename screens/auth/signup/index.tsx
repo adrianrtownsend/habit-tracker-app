@@ -31,40 +31,14 @@ import {
 import { Button, ButtonText, ButtonIcon } from '@/components/ui/button';
 import { Keyboard } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AlertTriangle } from 'lucide-react-native';
 import { GoogleIcon } from './assets/icons/google';
 import { Pressable } from '@/components/ui/pressable';
-import useRouter from '@unitools/router';
 import { AuthLayout } from '../layout';
 import { router } from 'expo-router';
-
-const signUpSchema = z.object({
-	email: z.string().min(1, 'Email is required').email(),
-	password: z
-		.string()
-		.min(6, 'Must be at least 8 characters in length')
-		.regex(new RegExp('.*[A-Z].*'), 'One uppercase character')
-		.regex(new RegExp('.*[a-z].*'), 'One lowercase character')
-		.regex(new RegExp('.*\\d.*'), 'One number')
-		.regex(
-			new RegExp('.*[`~<>?,./!@#$%^&*()\\-_+="\'|{}\\[\\];:\\\\].*'),
-			'One special character'
-		),
-	confirmpassword: z
-		.string()
-		.min(6, 'Must be at least 8 characters in length')
-		.regex(new RegExp('.*[A-Z].*'), 'One uppercase character')
-		.regex(new RegExp('.*[a-z].*'), 'One lowercase character')
-		.regex(new RegExp('.*\\d.*'), 'One number')
-		.regex(
-			new RegExp('.*[`~<>?,./!@#$%^&*()\\-_+="\'|{}\\[\\];:\\\\].*'),
-			'One special character'
-		),
-	rememberme: z.boolean().optional(),
-});
-type SignUpSchemaType = z.infer<typeof signUpSchema>;
+import auth from '@/lib/feathers/auth';
+import { signUpSchema, SignUpSchemaType } from '@/utils/schemas';
 
 const SignUpWithLeftBackground = () => {
 	const {
@@ -77,23 +51,9 @@ const SignUpWithLeftBackground = () => {
 	});
 	const toast = useToast();
 
-	const onSubmit = (data: SignUpSchemaType) => {
+	const onSubmit = async (data: SignUpSchemaType) => {
 		if (data.password === data.confirmpassword) {
-			toast.show({
-				placement: 'bottom right',
-				render: ({ id }) => {
-					return (
-						<Toast
-							nativeID={id}
-							variant='accent'
-							action='success'
-						>
-							<ToastTitle>Success</ToastTitle>
-						</Toast>
-					);
-				},
-			});
-			reset();
+			await auth.signup(data);
 		} else {
 			toast.show({
 				placement: 'bottom right',
@@ -101,7 +61,7 @@ const SignUpWithLeftBackground = () => {
 					return (
 						<Toast
 							nativeID={id}
-							variant='accent'
+							variant='outline'
 							action='error'
 						>
 							<ToastTitle>Passwords do not match</ToastTitle>
@@ -111,6 +71,11 @@ const SignUpWithLeftBackground = () => {
 			});
 		}
 	};
+
+	const onSubmitGoogle = async () => {
+		await auth.googleOAuth();
+	};
+
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -350,7 +315,7 @@ const SignUpWithLeftBackground = () => {
 						variant='outline'
 						action='secondary'
 						className='w-full gap-1'
-						onPress={() => {}}
+						onPress={handleSubmit(onSubmitGoogle)}
 					>
 						<ButtonText className='font-medium'>
 							Continue with Google

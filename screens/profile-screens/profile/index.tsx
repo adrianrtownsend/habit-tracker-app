@@ -78,6 +78,9 @@ import { CameraSparklesIcon } from './assets/icons/camera-sparkles';
 import { EditPhotoIcon } from './assets/icons/edit-photo';
 import { isWeb } from '@gluestack-ui/nativewind-utils/IsWeb';
 import { router } from 'expo-router';
+import { MobileHeader, WebHeader } from '@/lib/theme/custom/header';
+import { MobileFooter } from '@/lib/theme/custom/footer';
+import { BottomTabsList } from '@/lib/theme/custom/lists/bottomTabList';
 
 type MobileHeaderProps = {
 	title: string;
@@ -118,33 +121,6 @@ const ResourcesList: Icons[] = [
 	{
 		iconName: NewsBlogIcon,
 		iconText: 'News & Blogs',
-	},
-];
-type BottomTabs = {
-	iconName: LucideIcon | typeof Icon;
-	iconText: string;
-};
-const bottomTabsList: BottomTabs[] = [
-	{
-		iconName: HomeIcon,
-		iconText: 'Home',
-	},
-
-	{
-		iconName: GlobeIcon,
-		iconText: 'Community',
-	},
-	{
-		iconName: InboxIcon,
-		iconText: 'Inbox',
-	},
-	{
-		iconName: HeartIcon,
-		iconText: 'Favourite',
-	},
-	{
-		iconName: ProfileIcon,
-		iconText: 'Profile',
 	},
 ];
 interface UserStats {
@@ -317,93 +293,6 @@ const DashboardLayout = (props: any) => {
 	);
 };
 
-function MobileFooter({ footerIcons }: { footerIcons: any }) {
-	return (
-		<HStack
-			className={cn(
-				'bg-background-0 justify-between w-full absolute left-0 bottom-0 right-0 p-3 overflow-hidden items-center  border-t-border-300  md:hidden border-t',
-				{ 'pb-5': Platform.OS === 'ios' },
-				{ 'pb-5': Platform.OS === 'android' }
-			)}
-		>
-			{footerIcons.map(
-				(
-					item: { iconText: string; iconName: any },
-					index: React.Key | null | undefined
-				) => {
-					return (
-						<Pressable
-							className='px-0.5 flex-1 flex-col items-center'
-							key={index}
-							onPress={() => router.push('/news-feed/news-and-feed')}
-						>
-							<Icon
-								as={item.iconName}
-								size='md'
-								className='h-[32px] w-[65px]'
-							/>
-							<Text className='text-xs text-center text-typography-600'>
-								{item.iconText}
-							</Text>
-						</Pressable>
-					);
-				}
-			)}
-		</HStack>
-	);
-}
-
-function WebHeader(props: HeaderProps) {
-	return (
-		<HStack className='pt-4 pr-10 pb-3 bg-background-0 items-center justify-between border-b border-border-300'>
-			<HStack className='items-center'>
-				<Pressable
-					onPress={() => {
-						props.toggleSidebar();
-					}}
-				>
-					<Icon
-						as={MenuIcon}
-						size='lg'
-						className='mx-5'
-					/>
-				</Pressable>
-				<Text className='text-2xl'>{props.title}</Text>
-			</HStack>
-
-			<Avatar className='h-9 w-9'>
-				<AvatarFallbackText className='font-light'>A</AvatarFallbackText>
-			</Avatar>
-		</HStack>
-	);
-}
-
-function MobileHeader(props: MobileHeaderProps) {
-	return (
-		<HStack
-			className='py-6 px-4 border-b border-border-300 bg-background-0 items-center justify-between'
-			space='md'
-		>
-			<HStack
-				className='items-center'
-				space='sm'
-			>
-				<Pressable
-					onPress={() => {
-						router.back();
-					}}
-				>
-					<Icon as={ChevronLeftIcon} />
-				</Pressable>
-				<Text className='text-xl'>{props.title}</Text>
-			</HStack>
-			<Icon
-				as={HeartIcon}
-				className='h-8 w-20'
-			/>
-		</HStack>
-	);
-}
 type userSchemaDetails = z.infer<typeof userSchema>;
 
 // Define the Zod schema
@@ -1862,7 +1751,6 @@ export const Profile = () => {
 			>
 				<MainContent />
 			</DashboardLayout>
-			<MobileFooter footerIcons={bottomTabsList} />
 		</SafeAreaView>
 	);
 };

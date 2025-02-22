@@ -3,6 +3,7 @@ import { VStack } from '@/components/ui/vstack';
 import { SafeAreaView } from '@/components/ui/safe-area-view';
 import { ScrollView } from '@/components/ui/scroll-view';
 import Image from '@unitools/image';
+import React from 'react';
 
 type AuthLayoutProps = {
 	children: React.ReactNode;

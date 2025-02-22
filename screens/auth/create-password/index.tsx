@@ -23,31 +23,11 @@ import { Pressable } from '@/components/ui/pressable';
 import useRouter from '@unitools/router';
 import { AuthLayout } from '../layout';
 import { router } from 'expo-router';
-
-const createPasswordSchema = z.object({
-	password: z
-		.string()
-		.min(6, 'Must be at least 8 characters in length')
-		.regex(new RegExp('.*[A-Z].*'), 'One uppercase character')
-		.regex(new RegExp('.*[a-z].*'), 'One lowercase character')
-		.regex(new RegExp('.*\\d.*'), 'One number')
-		.regex(
-			new RegExp('.*[`~<>?,./!@#$%^&*()\\-_+="\'|{}\\[\\];:\\\\].*'),
-			'One special character'
-		),
-	confirmpassword: z
-		.string()
-		.min(6, 'Must be at least 8 characters in length')
-		.regex(new RegExp('.*[A-Z].*'), 'One uppercase character')
-		.regex(new RegExp('.*[a-z].*'), 'One lowercase character')
-		.regex(new RegExp('.*\\d.*'), 'One number')
-		.regex(
-			new RegExp('.*[`~<>?,./!@#$%^&*()\\-_+="\'|{}\\[\\];:\\\\].*'),
-			'One special character'
-		),
-});
-
-type CreatePasswordSchemaType = z.infer<typeof createPasswordSchema>;
+import {
+	createPasswordSchema,
+	CreatePasswordSchemaType,
+} from '@/utils/schemas';
+import React from 'react';
 
 const CreatePasswordWithLeftBackground = () => {
 	const {
@@ -68,7 +48,7 @@ const CreatePasswordWithLeftBackground = () => {
 					return (
 						<Toast
 							nativeID={id}
-							variant='accent'
+							variant='outline'
 							action='success'
 						>
 							<ToastTitle>Success</ToastTitle>
@@ -84,7 +64,7 @@ const CreatePasswordWithLeftBackground = () => {
 					return (
 						<Toast
 							nativeID={id}
-							variant='accent'
+							variant='outline'
 							action='error'
 						>
 							<ToastTitle>Passwords do not match</ToastTitle>

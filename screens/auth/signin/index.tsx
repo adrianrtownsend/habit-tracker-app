@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Toast, ToastTitle, useToast } from '@/components/ui/toast';
 import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
@@ -31,14 +31,16 @@ import {
 import { Button, ButtonText, ButtonIcon } from '@/components/ui/button';
 import { Keyboard } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AlertTriangle } from 'lucide-react-native';
 import { GoogleIcon } from './assets/icons/google';
 import { Pressable } from '@/components/ui/pressable';
-import useRouter from '@unitools/router';
 import { AuthLayout } from '../layout';
 import { router } from 'expo-router';
+import auth from '@/lib/feathers/auth';
+import { FeathersClientContext } from '@/lib/feathers/contexts/FeathersClientContext';
+import feathersClient from '@/lib/feathers';
+import { loginSchema, LoginSchemaType } from '@/utils/schemas';
 
 const USERS = [
 	{
@@ -55,14 +57,6 @@ const USERS = [
 	},
 ];
 
-const loginSchema = z.object({
-	email: z.string().min(1, 'Email is required').email(),
-	password: z.string().min(1, 'Password is required'),
-	rememberme: z.boolean().optional(),
-});
-
-type LoginSchemaType = z.infer<typeof loginSchema>;
-
 const LoginWithLeftBackground = () => {
 	const {
 		control,
@@ -78,33 +72,21 @@ const LoginWithLeftBackground = () => {
 		passwordValid: true,
 	});
 
-	const onSubmit = (data: LoginSchemaType) => {
-		const user = USERS.find((element) => element.email === data.email);
-		if (user) {
-			if (user.password !== data.password)
-				setValidated({ emailValid: true, passwordValid: false });
-			else {
-				setValidated({ emailValid: true, passwordValid: true });
-				toast.show({
-					placement: 'bottom right',
-					render: ({ id }) => {
-						return (
-							<Toast
-								nativeID={id}
-								variant='accent'
-								action='success'
-							>
-								<ToastTitle>Logged in successfully!</ToastTitle>
-							</Toast>
-						);
-					},
-				});
-				reset();
-			}
-		} else {
-			setValidated({ emailValid: false, passwordValid: true });
-		}
+	const fcc = useContext(FeathersClientContext);
+
+	const onSubmit = async (data: LoginSchemaType) => {
+		const login = await feathersClient.authenticate({
+			strategy: 'local',
+			...data,
+		});
+
+		console.log('login: ', login);
 	};
+
+	const onSubmitGoogle = async () => {
+		await auth.googleOAuth();
+	};
+
 	const [showPassword, setShowPassword] = useState(false);
 
 	const handleState = () => {
@@ -284,7 +266,7 @@ const LoginWithLeftBackground = () => {
 						variant='outline'
 						action='secondary'
 						className='w-full gap-1'
-						onPress={() => {}}
+						onPress={handleSubmit(onSubmitGoogle)}
 					>
 						<ButtonText className='font-medium'>
 							Continue with Google
