@@ -1,84 +1,23 @@
 import { Box } from '@/components/ui/box';
 import { HStack } from '@/components/ui/hstack';
 import { isWeb } from '@gluestack-ui/nativewind-utils/IsWeb';
-import { ChevronLeftIcon, Icon, MenuIcon } from '@/components/ui/icon';
+import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { VStack } from '@/components/ui/vstack';
 import { Pressable } from '@/components/ui/pressable';
-import { InboxIcon } from './assets/icons/inbox';
-import { GlobeIcon } from './assets/icons/globe';
 import { Button, ButtonText } from '@/components/ui/button';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Heading } from '@/components/ui/heading';
 import { ScrollView } from '@/components/ui/scroll-view';
 import { Divider } from '@/components/ui/divider';
 import { Grid, GridItem } from '@/components/ui/grid';
-import {
-	Avatar,
-	AvatarFallbackText,
-	AvatarImage,
-} from '@/components/ui/avatar';
-import { HomeIcon } from './assets/icons/home';
-import { HeartIcon } from './assets/icons/heart';
-import { ProfileIcon } from './assets/icons/profile';
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { CalendarIcon } from './assets/icons/calendar';
 import { SafeAreaView } from '@/components/ui/safe-area-view';
 import { cn } from '@gluestack-ui/nativewind-utils/cn';
-import { Platform } from 'react-native';
 import { router } from 'expo-router';
-import React from 'react';
 import { TaskForm } from '@/forms/task';
-import {
-	BottomTabIcon,
-	HeaderProps,
-	IconLink,
-	MobileHeaderProps,
-} from '@/types';
-import { MobileHeader, WebHeader } from '@/lib/theme/custom/header';
-import { MobileFooter } from '@/lib/theme/custom/footer';
-
-const list: IconLink[] = [
-	{
-		iconName: HomeIcon,
-		route: '/',
-	},
-	{
-		iconName: InboxIcon,
-	},
-	{
-		iconName: GlobeIcon,
-		route: '/news-feed',
-	},
-	{
-		iconName: HeartIcon,
-	},
-];
-const bottomTabsList: BottomTabIcon[] = [
-	{
-		iconName: HomeIcon,
-		iconText: 'Home',
-		route: '/',
-	},
-
-	{
-		iconName: GlobeIcon,
-		iconText: 'Community',
-		route: '/news-feed',
-	},
-	{
-		iconName: InboxIcon,
-		iconText: 'Inbox',
-	},
-	{
-		iconName: HeartIcon,
-		iconText: 'Favourite',
-	},
-	{
-		iconName: ProfileIcon,
-		iconText: 'Profile',
-		route: '/profile',
-	},
-];
+import { WebHeader } from '@/lib/theme/custom/header';
 
 interface CardData {
 	bannerUri: string;
@@ -212,7 +151,7 @@ const Sidebar = () => {
 			className='w-14 pt-5 h-full items-center border-r border-border-300'
 			space='xl'
 		>
-			{list.map((item, index) => {
+			{/*list.map((item, index) => {
 				return (
 					<Pressable
 						key={index}
@@ -228,7 +167,7 @@ const Sidebar = () => {
 						/>
 					</Pressable>
 				);
-			})}
+			})*/}
 		</VStack>
 	);
 };
@@ -558,7 +497,6 @@ export const Dashboard = () => {
 			>
 				<MainContent />
 			</DashboardLayout>
-			<MobileFooter footerIcons={bottomTabsList} />
 		</SafeAreaView>
 	);
 };

@@ -14,27 +14,36 @@ import { Heading } from '@/components/ui/heading';
 import { Box } from '@/components/ui/box';
 import { Image } from '@/components/ui/image';
 import { Divider } from '@/components/ui/divider';
+import { string } from 'zod';
+import { getInitials } from '../utils';
+import { ActionButton } from '../button';
 
 type CardProps = {
-	props: {
+	name: string;
+	description: string;
+	button:
+		| { text: string; action: () => void }
+		| { text: string; action: () => void }[];
+	action: (() => void)[] | { text: string; action: () => void }[];
+	route: string;
+	index: number;
+	user: {
 		name: string;
-		description: string;
-		actions: (() => void)[];
-		route: string;
-		index: number;
-		user: {
-			name: string;
-			username: string;
-			avatar: string;
-		};
+		username: string;
+		avatar: string;
 	};
 };
 
 type CardSmallProps = CardProps;
 
-export const CardSmall = ({ props }: CardSmallProps) => {
-	const { user, name, description, actions, route, index } = props;
-
+export const CardSmall = ({
+	user,
+	name,
+	description,
+	action,
+	route,
+	index,
+}: CardSmallProps) => {
 	return (
 		<HStack
 			className='p-4 items-center h-full border border-border-300 rounded-xl'
@@ -46,6 +55,9 @@ export const CardSmall = ({ props }: CardSmallProps) => {
 					<AvatarFallbackText>{user.name ?? 'U'}</AvatarFallbackText>
 				</Avatar>
 			</Avatar>
+			<VStack>
+				<Text className='font-semibold text-typography-900'>{name}</Text>
+			</VStack>
 			<Button
 				variant='outline'
 				action='secondary'
@@ -53,10 +65,6 @@ export const CardSmall = ({ props }: CardSmallProps) => {
 			>
 				<ButtonIcon as={DownloadIcon} />
 			</Button>
-			<VStack>
-				<Text className='font-semibold text-typography-900'>{name}</Text>
-				<Text className='line-clamp-1 text-sm'>{description}</Text>
-			</VStack>
 			<Button
 				action='secondary'
 				variant='outline'
@@ -68,14 +76,20 @@ export const CardSmall = ({ props }: CardSmallProps) => {
 };
 
 type CardMediumProps = CardProps & {
-	props: {
-		date: string;
-		image?: string;
-	};
+	date: string;
+	image?: string;
 };
 
-export const CardMedium = ({ props }: CardMediumProps) => {
-	const { user, name, description, actions, route, index, date, image } = props;
+export const CardMedium = ({
+	user,
+	name,
+	description,
+	action,
+	route,
+	index,
+	date,
+	image,
+}: CardMediumProps) => {
 	return (
 		<Card className='p-5 rounded-lg max-w-[360px] m-3'>
 			<Text className='text-sm font-normal mb-2 text-typography-700'>
@@ -84,7 +98,9 @@ export const CardMedium = ({ props }: CardMediumProps) => {
 			<VStack className='mb-6'>
 				<Image
 					source={{
-						uri: 'https://gluestack.github.io/public-blog-video-assets/yoga.png',
+						uri:
+							image ||
+							'https://gluestack.github.io/public-blog-video-assets/yoga.png',
 					}}
 					className='mb-6 h-[240px] w-full rounded-md aspect-[263/240]'
 					alt='image'
@@ -99,7 +115,7 @@ export const CardMedium = ({ props }: CardMediumProps) => {
 			</VStack>
 			<Box className='flex-row'>
 				<Avatar className='mr-3'>
-					<AvatarFallbackText>RR</AvatarFallbackText>
+					<AvatarFallbackText>{getInitials(user.name)}</AvatarFallbackText>
 					<AvatarImage
 						source={{
 							uri:
@@ -123,13 +139,19 @@ export const CardMedium = ({ props }: CardMediumProps) => {
 	);
 };
 
-export const CardLarge = ({ props }: CardProps) => {
-	const { user, name, description, actions, route, index } = props;
+export const CardLarge = ({
+	user,
+	name,
+	description,
+	button,
+	route,
+	index,
+}: CardProps) => {
 	return (
 		<Card className='p-6 rounded-lg max-w-[360px] m-3'>
 			<Box className='flex-row'>
 				<Avatar className='mr-4'>
-					<AvatarFallbackText>JD</AvatarFallbackText>
+					<AvatarFallbackText>{getInitials(user.name)}</AvatarFallbackText>
 					<AvatarImage
 						source={{
 							uri:
@@ -148,7 +170,6 @@ export const CardLarge = ({ props }: CardProps) => {
 					<Text size='sm'>{user.username}</Text>
 				</VStack>
 			</Box>
-			<Box className='my-5 flex-col sm:flex-row'>{/* header section */}</Box>
 			<Box className='mb-5 flex-col sm:mb-6 sm:flex-row'>
 				<Image
 					source={{
@@ -165,9 +186,34 @@ export const CardLarge = ({ props }: CardProps) => {
 					alt='image'
 				/>
 			</Box>
-			<Button className='py-2 px-4'>
-				<ButtonText size='sm'>Follow</ButtonText>
-			</Button>
+			<Box className='my-5 flex-col sm:flex-row'>
+				{<Text className='line-clamp-1 text-sm'>{description}</Text>}
+			</Box>
+			<ActionButton label={'Follow'} />
 		</Card>
+	);
+};
+
+export const CardNews = ({ item }: { item: any }) => {
+	return (
+		<VStack className='rounded-xl border border-border-300 p-5'>
+			<Box className='w-full h-64 rounded'>
+				<Image
+					height={'100%'}
+					width={'100%'}
+					source={item.bannerUri}
+					alt={item.bannerUri}
+					contentFit='cover'
+				/>
+			</Box>
+			<VStack
+				className='mt-4'
+				space='md'
+			>
+				<Text className='text-sm'>{item.publishedDate}</Text>
+				<Heading size='md'>{item.title}</Heading>
+				<Text className='line-clamp-2'>{item.description}</Text>
+			</VStack>
+		</VStack>
 	);
 };

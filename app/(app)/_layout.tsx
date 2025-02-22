@@ -1,41 +1,66 @@
-import { Redirect, router, Stack } from 'expo-router';
-import React, { useContext, useEffect, useState } from 'react';
+import { Stack, Tabs } from 'expo-router';
+import React, { useContext } from 'react';
+
+import { FeathersClientContext } from '@/lib/feathers/contexts/FeathersClientContext';
 
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import feathersClient from '@/lib/feathers';
-import { Text } from '@/components/ui/text';
-import { View } from '@/components/ui/view';
-import { FeathersClientContext } from '@/lib/feathers/contexts/FeathersClientContext';
 
-const StackLayout = () => {
+const TabLayout = () => {
 	const { user } = useContext(FeathersClientContext);
 
 	// if (!user) {
 	// 	return <Redirect href='/auth/signin' />;
 	// }
 
+	const colorScheme = useColorScheme();
+
 	return (
-		<Stack
+		<Tabs
 			screenOptions={{
+				tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
 				headerShown: false,
 			}}
 		>
-			<Stack.Screen
+			<Tabs.Screen
 				name='index'
-				options={{ headerShown: false }}
+				options={{
+					title: 'Home',
+					tabBarIcon: ({ color, focused }) => (
+						<TabBarIcon
+							name={focused ? 'home' : 'home-outline'}
+							color={color}
+						/>
+					),
+				}}
 			/>
-			<Stack.Screen
+			<Tabs.Screen
 				name='news-feed'
-				options={{ headerShown: false }}
+				options={{
+					title: 'Feed',
+					tabBarIcon: ({ color, focused }) => (
+						<TabBarIcon
+							name={focused ? 'code-slash' : 'code-slash-outline'}
+							color={color}
+						/>
+					),
+				}}
 			/>
-			<Stack.Screen
+			<Tabs.Screen
 				name='profile'
-				options={{ headerShown: false }}
+				options={{
+					title: 'Profile',
+					tabBarIcon: ({ color, focused }) => (
+						<TabBarIcon
+							name={focused ? 'code-slash' : 'code-slash-outline'}
+							color={color}
+						/>
+					),
+				}}
 			/>
-		</Stack>
+		</Tabs>
 	);
 };
 
-export default StackLayout;
+export default TabLayout;

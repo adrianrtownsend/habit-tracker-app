@@ -80,6 +80,7 @@ import { isWeb } from '@gluestack-ui/nativewind-utils/IsWeb';
 import { router } from 'expo-router';
 import { MobileHeader, WebHeader } from '@/lib/theme/custom/header';
 import { MobileFooter } from '@/lib/theme/custom/footer';
+import { BottomTabsList } from '@/lib/theme/custom/lists/bottomTabList';
 
 type MobileHeaderProps = {
 	title: string;
@@ -120,33 +121,6 @@ const ResourcesList: Icons[] = [
 	{
 		iconName: NewsBlogIcon,
 		iconText: 'News & Blogs',
-	},
-];
-type BottomTabs = {
-	iconName: LucideIcon | typeof Icon;
-	iconText: string;
-};
-const bottomTabsList: BottomTabs[] = [
-	{
-		iconName: HomeIcon,
-		iconText: 'Home',
-	},
-
-	{
-		iconName: GlobeIcon,
-		iconText: 'Community',
-	},
-	{
-		iconName: InboxIcon,
-		iconText: 'Inbox',
-	},
-	{
-		iconName: HeartIcon,
-		iconText: 'Favourite',
-	},
-	{
-		iconName: ProfileIcon,
-		iconText: 'Profile',
 	},
 ];
 interface UserStats {
@@ -1777,7 +1751,6 @@ export const Profile = () => {
 			>
 				<MainContent />
 			</DashboardLayout>
-			<MobileFooter footerIcons={bottomTabsList} />
 		</SafeAreaView>
 	);
 };

@@ -35,6 +35,8 @@ import { cn } from '@gluestack-ui/nativewind-utils/cn';
 import { Platform } from 'react-native';
 import { router } from 'expo-router';
 import { WebHeader } from '@/lib/theme/custom/header';
+import { CardNews } from '@/lib/theme/custom/card';
+import { BottomTabsList } from '@/lib/theme/custom/lists/bottomTabList';
 type MobileHeaderProps = {
 	title: string;
 };
@@ -59,33 +61,6 @@ const list: Icons[] = [
 	},
 	{
 		iconName: HeartIcon,
-	},
-];
-type BottomTabs = {
-	iconName: LucideIcon | typeof Icon;
-	iconText: string;
-};
-const bottomTabsList: BottomTabs[] = [
-	{
-		iconName: HomeIcon,
-		iconText: 'Home',
-	},
-
-	{
-		iconName: GlobeIcon,
-		iconText: 'Community',
-	},
-	{
-		iconName: FeedIcon,
-		iconText: 'Feed',
-	},
-	{
-		iconName: HeartIcon,
-		iconText: 'Favourite',
-	},
-	{
-		iconName: ProfileIcon,
-		iconText: 'Profile',
 	},
 ];
 
@@ -230,7 +205,13 @@ const DashboardLayout = (props: any) => {
 	);
 };
 
-function MobileFooter({ footerIcons }: { footerIcons: any }) {
+function MobileFooter({
+	footerIcons,
+	route,
+}: {
+	footerIcons: any;
+	route: string;
+}) {
 	return (
 		<HStack
 			className={cn(
@@ -248,7 +229,7 @@ function MobileFooter({ footerIcons }: { footerIcons: any }) {
 						<Pressable
 							className='px-0.5 flex-1 flex-col items-center'
 							key={index}
-							onPress={() => router.push('/news-feed/news-and-feed')}
+							onPress={() => router.push(route)}
 						>
 							<Icon
 								as={item.iconName}
@@ -445,7 +426,6 @@ export const NewsAndFeed = () => {
 			>
 				<MainContent />
 			</DashboardLayout>
-			<MobileFooter footerIcons={bottomTabsList} />
 		</SafeAreaView>
 	);
 };
