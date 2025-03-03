@@ -72,15 +72,10 @@ const LoginWithLeftBackground = () => {
 		passwordValid: true,
 	});
 
-	const fcc = useContext(FeathersClientContext);
+	const { login } = useContext(FeathersClientContext);
 
 	const onSubmit = async (data: LoginSchemaType) => {
-		const login = await feathersClient.authenticate({
-			strategy: 'local',
-			...data,
-		});
-
-		console.log('login: ', login);
+		await login(data);
 	};
 
 	const onSubmitGoogle = async () => {

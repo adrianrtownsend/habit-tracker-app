@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Toast, ToastTitle, useToast } from '@/components/ui/toast';
 import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
@@ -39,6 +39,7 @@ import { AuthLayout } from '../layout';
 import { router } from 'expo-router';
 import auth from '@/lib/feathers/auth';
 import { signUpSchema, SignUpSchemaType } from '@/utils/schemas';
+import { FeathersClientContext } from '@/lib/feathers/contexts/FeathersClientContext';
 
 const SignUpWithLeftBackground = () => {
 	const {
@@ -51,9 +52,11 @@ const SignUpWithLeftBackground = () => {
 	});
 	const toast = useToast();
 
+	const { signup, googleOAuth } = useContext(FeathersClientContext);
+
 	const onSubmit = async (data: SignUpSchemaType) => {
 		if (data.password === data.confirmpassword) {
-			await auth.signup(data);
+			await signup(data);
 		} else {
 			toast.show({
 				placement: 'bottom right',
@@ -73,7 +76,7 @@ const SignUpWithLeftBackground = () => {
 	};
 
 	const onSubmitGoogle = async () => {
-		await auth.googleOAuth();
+		await googleOAuth();
 	};
 
 	const [showPassword, setShowPassword] = useState(false);

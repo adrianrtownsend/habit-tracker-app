@@ -1,43 +1,32 @@
 // habit-tracker-app/lib/feathers/contexts/FeathersClientContext.tsx
-import React, {
-	createContext,
-	useState,
-	useEffect,
-	useMemo,
-	useReducer,
-} from 'react';
+import React, { createContext, useEffect, useMemo, useReducer } from 'react';
 import feathersClient from '..';
+import { LoginSchemaType } from '@/utils/schemas';
 
 interface AuthData {
 	email: string;
 	password: string;
 }
 
-interface SignupResponse {
-	id: string;
-	email: string;
+interface User {
+	_id: string;
+	// Add other properties of the Feathers user object as needed
 }
 
-interface LoginResponse {
-	accessToken: string;
-	refreshToken: string;
+interface FeathersClientContextType {
+	user: User | null;
+	loading: boolean;
+	signup: (data: AuthData) => Promise<void>;
+	login: (data: LoginSchemaType) => Promise<void>;
+	logout: () => Promise<void>;
+	googleOAuth: () => Promise<void>;
 }
 
-type User = any | null;
-
-type FeathersClientAction =
-	| {
-			user: User;
-			type: 'SET_USER';
-	  }
-	| { type: 'LOGOUT' }
-	| { type: 'SET_LOADING' };
-
-export const FeathersClientContext = createContext({
+export const FeathersClientContext = createContext<FeathersClientContextType>({
 	user: null,
 	loading: true,
-	signup: async (data: AuthData) => {},
-	login: async (data: AuthData) => {},
+	signup: async () => {},
+	login: async () => {},
 	logout: async () => {},
 	googleOAuth: async () => {},
 });
@@ -55,21 +44,20 @@ export const FeathersClientProvider = ({
 		[]
 	);
 
-	const feathersClientReducer = (
-		state: typeof initialState,
-		action: FeathersClientAction
-	) => {
+	const feathersClientReducer = (state: typeof initialState, action: any) => {
 		switch (action.type) {
 			case 'SET_USER':
 				return {
 					...state,
-					user: action.user,
+					user: action.user || null,
+					token: action.token || null,
 					loading: false,
 				};
 			case 'LOGOUT':
 				return {
 					...state,
 					user: null,
+					token: null,
 					loading: false,
 				};
 			case 'SET_LOADING':
@@ -86,57 +74,43 @@ export const FeathersClientProvider = ({
 
 	const getUser = async () => {
 		try {
-			const user = await feathersClient.get('authentication');
-			console.log('context user: ', user);
-			dispatch({ type: 'SET_USER', user });
+			const auth = await feathersClient.reAuthenticate();
+			dispatch({ type: 'SET_USER', user: auth.user, token: auth.accessToken });
 		} catch (error) {
-			dispatch({ type: 'SET_USER', user: null });
+			dispatch({ type: 'SET_USER' });
 		}
 	};
 
 	useEffect(() => {
-		if (!feathersClient.authentication.authenticated)
-			return dispatch({ type: 'SET_LOADING' });
-
 		getUser();
 	}, []);
 
 	const signup = async (data: AuthData) => {
-		try {
-			await feathersClient.service('users').create(data);
-		} catch (error) {
-			throw error;
-		}
+		const user = await feathersClient.service('users').create({
+			email: data.email,
+			password: data.password,
+		});
+		dispatch({ type: 'SET_USER', user });
 	};
 
-	const login = async (data: AuthData) => {
-		try {
-			await feathersClient.authenticate({
-				strategy: 'local',
-				...data,
-			});
-		} catch (error) {
-			throw error;
-		}
+	const login = async (data: LoginSchemaType) => {
+		const auth = await feathersClient.authenticate({
+			strategy: 'local',
+			...data,
+		});
+		dispatch({ type: 'SET_USER', user: auth.user, token: auth.accessToken });
 	};
 
 	const logout = async () => {
-		try {
-			await feathersClient.logout();
-			dispatch({ type: 'LOGOUT' });
-		} catch (error) {
-			throw error;
-		}
+		await feathersClient.logout();
+		dispatch({ type: 'LOGOUT' });
 	};
 
 	const googleOAuth = async () => {
-		try {
-			await feathersClient.authenticate({
-				strategy: 'google',
-			});
-		} catch (error) {
-			throw error;
-		}
+		const user = await feathersClient.authenticate({
+			strategy: 'google',
+		});
+		dispatch({ type: 'SET_USER', user });
 	};
 
 	const contextValue = useMemo(

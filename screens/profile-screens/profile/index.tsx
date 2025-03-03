@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { Box } from '@/components/ui/box';
 import { HStack } from '@/components/ui/hstack';
 import {
@@ -81,6 +81,7 @@ import { router } from 'expo-router';
 import { MobileHeader, WebHeader } from '@/lib/theme/custom/header';
 import { MobileFooter } from '@/lib/theme/custom/footer';
 import { BottomTabsList } from '@/lib/theme/custom/lists/bottomTabList';
+import { FeathersClientContext } from '@/lib/feathers/contexts/FeathersClientContext';
 
 type MobileHeaderProps = {
 	title: string;
@@ -355,6 +356,8 @@ const accountData: AccountCardType[] = [
 const MainContent = () => {
 	const [showModal, setShowModal] = useState(false);
 
+	const { logout } = useContext(FeathersClientContext);
+
 	return (
 		<VStack className='h-full w-full mb-16 md:mb-0'>
 			<ModalComponent
@@ -489,6 +492,15 @@ const MainContent = () => {
 								className='gap-3 relative'
 							>
 								<ButtonText className='text-dark'>Edit Profile</ButtonText>
+								<ButtonIcon as={EditIcon} />
+							</Button>
+							<Button
+								variant='outline'
+								action='secondary'
+								onPress={() => logout()}
+								className='gap-3 relative'
+							>
+								<ButtonText className='text-dark'>Logout</ButtonText>
 								<ButtonIcon as={EditIcon} />
 							</Button>
 						</VStack>

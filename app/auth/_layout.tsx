@@ -1,6 +1,12 @@
-import React from 'react';
-import { Stack } from 'expo-router';
+import React, { useContext } from 'react';
+import { Redirect, Stack } from 'expo-router';
+import { FeathersClientContext } from '@/lib/feathers/contexts/FeathersClientContext';
 const StackLayout = () => {
+	const { user } = useContext(FeathersClientContext);
+	if (user) {
+		return <Redirect href='/' />;
+	}
+
 	return (
 		<Stack
 			screenOptions={{

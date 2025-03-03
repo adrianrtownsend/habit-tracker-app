@@ -1,4 +1,4 @@
-import { Stack, Tabs } from 'expo-router';
+import { Redirect, Tabs } from 'expo-router';
 import React, { useContext } from 'react';
 
 import { FeathersClientContext } from '@/lib/feathers/contexts/FeathersClientContext';
@@ -8,13 +8,12 @@ import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
 const TabLayout = () => {
-	const { user } = useContext(FeathersClientContext);
-
-	// if (!user) {
-	// 	return <Redirect href='/auth/signin' />;
-	// }
-
 	const colorScheme = useColorScheme();
+
+	const { user } = useContext(FeathersClientContext);
+	if (!user) {
+		return <Redirect href='/auth/signin' />;
+	}
 
 	return (
 		<Tabs
@@ -41,7 +40,7 @@ const TabLayout = () => {
 					title: 'Feed',
 					tabBarIcon: ({ color, focused }) => (
 						<TabBarIcon
-							name={focused ? 'code-slash' : 'code-slash-outline'}
+							name={focused ? 'globe' : 'globe-outline'}
 							color={color}
 						/>
 					),
@@ -53,7 +52,7 @@ const TabLayout = () => {
 					title: 'Profile',
 					tabBarIcon: ({ color, focused }) => (
 						<TabBarIcon
-							name={focused ? 'code-slash' : 'code-slash-outline'}
+							name={focused ? 'person' : 'person-outline'}
 							color={color}
 						/>
 					),

@@ -1,5 +1,5 @@
 // auth.ts
-import { Feathers } from '@feathersjs/feathers';
+import { router } from 'expo-router';
 import feathersClient from '..';
 
 interface AuthData {
@@ -19,30 +19,18 @@ interface LoginResponse {
 
 const auth = {
 	signup: async (data: AuthData) => {
-		try {
-			await feathersClient.service('users').create(data);
-		} catch (error) {
-			throw error;
-		}
+		await feathersClient.service('users').create(data);
 	},
 
 	login: async (data: AuthData) => {
-		try {
-			await feathersClient.authenticate({
-				strategy: 'local',
-				...data,
-			});
-		} catch (error) {
-			throw error;
-		}
+		await feathersClient.authenticate({
+			strategy: 'local',
+			...data,
+		});
 	},
 
 	logout: async () => {
-		try {
-			await feathersClient.logout();
-		} catch (error) {
-			throw error;
-		}
+		await feathersClient.logout();
 	},
 	googleOAuth: async () => {
 		try {

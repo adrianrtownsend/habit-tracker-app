@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Box } from '@/components/ui/box';
 import { HStack } from '@/components/ui/hstack';
 import {
@@ -37,6 +37,10 @@ import { router } from 'expo-router';
 import { WebHeader } from '@/lib/theme/custom/header';
 import { CardNews } from '@/lib/theme/custom/card';
 import { BottomTabsList } from '@/lib/theme/custom/lists/bottomTabList';
+import { FeathersClientContext } from '@/lib/feathers/contexts/FeathersClientContext';
+import { useFetch } from '@/hooks/useFetch';
+import { getTasks } from '@/lib/feathers/api/task';
+import { getFormattedDate } from '@/utils/dates';
 type MobileHeaderProps = {
 	title: string;
 };
@@ -205,49 +209,67 @@ const DashboardLayout = (props: any) => {
 	);
 };
 
-function MobileFooter({
-	footerIcons,
-	route,
-}: {
-	footerIcons: any;
-	route: string;
-}) {
-	return (
-		<HStack
-			className={cn(
-				'bg-background-0 justify-between w-full absolute left-0 bottom-0 right-0 p-3 overflow-hidden items-center  border-t-border-300  md:hidden border-t',
-				{ 'pb-5': Platform.OS === 'ios' },
-				{ 'pb-5': Platform.OS === 'android' }
-			)}
-		>
-			{footerIcons.map(
-				(
-					item: { iconText: string; iconName: any },
-					index: React.Key | null | undefined
-				) => {
-					return (
-						<Pressable
-							className='px-0.5 flex-1 flex-col items-center'
-							key={index}
-							onPress={() => router.push(route)}
-						>
-							<Icon
-								as={item.iconName}
-								size='md'
-								className='h-[32px] w-[65px]'
-							/>
-							<Text className='text-xs text-center text-typography-600'>
-								{item.iconText}
-							</Text>
-						</Pressable>
-					);
-				}
-			)}
-		</HStack>
-	);
-}
+// function MobileFooter({
+// 	footerIcons,
+// 	route,
+// }: {
+// 	footerIcons: any;
+// 	route: string;
+// }) {
+// 	return (
+// 		<HStack
+// 			className={cn(
+// 				'bg-background-0 justify-between w-full absolute left-0 bottom-0 right-0 p-3 overflow-hidden items-center  border-t-border-300  md:hidden border-t',
+// 				{ 'pb-5': Platform.OS === 'ios' },
+// 				{ 'pb-5': Platform.OS === 'android' }
+// 			)}
+// 		>
+// 			{footerIcons.map(
+// 				(
+// 					item: { iconText: string; iconName: any },
+// 					index: React.Key | null | undefined
+// 				) => {
+// 					return (
+// 						<Pressable
+// 							className='px-0.5 flex-1 flex-col items-center'
+// 							key={index}
+// 							onPress={() => router.push(route)}
+// 						>
+// 							<Icon
+// 								as={item.iconName}
+// 								size='md'
+// 								className='h-[32px] w-[65px]'
+// 							/>
+// 							<Text className='text-xs text-center text-typography-600'>
+// 								{item.iconText}
+// 							</Text>
+// 						</Pressable>
+// 					);
+// 				}
+// 			)}
+// 		</HStack>
+// 	);
+// }
 
 const MainContent = () => {
+	const [data, setData] = useState<any>(null);
+	const [loading, setLoading] = useState<boolean>(true);
+	const [error, setError] = useState<Error | null>(null);
+
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const result = await getTasks({});
+				setData(result.data);
+			} catch (err) {
+				setError(err as Error);
+			} finally {
+				setLoading(false);
+			}
+		};
+		fetchData();
+	}, []);
+
 	return (
 		<VStack
 			className='p-4 pb-0 md:px-10 md:pt-6 md:pb-0 h-full w-full max-w-[1500px] self-center  mb-20 md:mb-2'
@@ -280,11 +302,11 @@ const MainContent = () => {
 						className='w-full'
 						space='2xl'
 					>
-						{BLOGS_DATA.map((item, index) => {
+						{data?.map((item: any) => {
 							return (
 								<VStack
 									className='rounded-xl border border-border-300 p-5'
-									key={index}
+									key={item._id}
 								>
 									<Box className='w-full h-64 rounded'>
 										<Image
@@ -299,8 +321,10 @@ const MainContent = () => {
 										className='mt-4'
 										space='md'
 									>
-										<Text className='text-sm'>{item.publishedDate}</Text>
-										<Heading size='md'>{item.title}</Heading>
+										<Text className='text-sm'>
+											{getFormattedDate(item.createdAt)}
+										</Text>
+										<Heading size='md'>{item.text}</Heading>
 										<Text className='line-clamp-2'>{item.description}</Text>
 									</VStack>
 								</VStack>

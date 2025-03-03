@@ -16,10 +16,7 @@ export const getTasks = async (params: any) => {
 
 export const createTask = async (task: any) => {
 	try {
-		const t = await taskService.create({
-			text: task.text,
-			userId: feathersClient.get('user')._id,
-		});
+		const t = await taskService.create(task);
 		return t;
 	} catch (error) {
 		console.error('error: ', error);

@@ -39,17 +39,11 @@ export default function RootLayout() {
 		...FontAwesome.font,
 	});
 
-	const { loading } = useContext(FeathersClientContext);
-
 	useEffect(() => {
-		if (loaded && !loading) {
+		if (loaded) {
 			SplashScreen.hideAsync();
 		}
 	}, [loaded]);
-
-	if (!loaded) {
-		return null;
-	}
 
 	return (
 		<FeathersClientProvider>
