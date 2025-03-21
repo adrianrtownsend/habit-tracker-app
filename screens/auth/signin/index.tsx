@@ -84,6 +84,14 @@ const LoginWithLeftBackground = () => {
 
 	const [showPassword, setShowPassword] = useState(false);
 
+	/*************  ✨ Codeium Command ⭐  *************/
+	/**
+	 * Handles the state of showPassword
+	 *
+	 * This function toggles the state of showPassword when the eye icon is pressed.
+	 * It is used to show or hide the password text in the input field.
+	 */
+	/******  f2fcd2e7-c981-41a2-933c-e64ae8ef7ce4  *******/
 	const handleState = () => {
 		setShowPassword((showState) => {
 			return !showState;
@@ -129,7 +137,7 @@ const LoginWithLeftBackground = () => {
 					className='w-full'
 				>
 					<FormControl
-						isInvalid={!!errors?.email || !validated.emailValid}
+						isInvalid={!!errors.email?.message || !validated.emailValid}
 						className='w-full'
 					>
 						<FormControlLabel>
@@ -165,14 +173,14 @@ const LoginWithLeftBackground = () => {
 						<FormControlError>
 							<FormControlErrorIcon as={AlertTriangle} />
 							<FormControlErrorText>
-								{errors?.email?.message ||
+								{errors.email?.message ||
 									(!validated.emailValid && 'Email ID not found')}
 							</FormControlErrorText>
 						</FormControlError>
 					</FormControl>
 					{/* Label Message */}
 					<FormControl
-						isInvalid={!!errors.password || !validated.passwordValid}
+						isInvalid={!!errors.password?.message || !validated.passwordValid}
 						className='w-full'
 					>
 						<FormControlLabel>

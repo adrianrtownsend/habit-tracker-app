@@ -21,12 +21,12 @@ import { ActionButton } from '../button';
 type CardProps = {
 	name: string;
 	description: string;
-	button:
+	button?:
 		| { text: string; action: () => void }
 		| { text: string; action: () => void }[];
-	action: (() => void)[] | { text: string; action: () => void }[];
-	route: string;
-	index: number;
+	action?: (() => void)[] | { text: string; action: () => void }[];
+	route?: string;
+	index?: number;
 	user: {
 		name: string;
 		username: string;
@@ -76,7 +76,7 @@ export const CardSmall = ({
 };
 
 type CardMediumProps = CardProps & {
-	date: string;
+	date?: string;
 	image?: string;
 };
 
